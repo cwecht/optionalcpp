@@ -1,17 +1,26 @@
 #ifndef OPTIONALCPP_OPTIONAL_HPP
 #define OPTIONALCPP_OPTIONAL_HPP
 
-struct optional_unsigned_int {
+class optional_unsigned_int { 
+public:
+  optional_unsigned_int() 
+    : mHasValue(false) {}
 
-  optional_unsigned_int()
-    : is_set(false) {}
+  optional_unsigned_int(unsigned int value)
+    : mHasValue(true)
+    , mValue(value) {}
 
-  optional_unsigned_int(unsigned int v)
-    : is_set(true)
-    , value(v) {};
+  bool has_value() {
+    return mHasValue;
+  }
 
-  bool is_set;
-  unsigned int value;
+  unsigned int value() {
+    return mValue;
+  }
+
+private:
+  bool mHasValue;
+  unsigned int mValue;
 };
 
 #endif // OPTIONALCPP_OPTIONAL_HPP
