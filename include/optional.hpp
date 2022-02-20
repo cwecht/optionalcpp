@@ -29,6 +29,25 @@ public:
     return !(a == b);
   }
 
+  friend bool operator <(optional_unsigned_int a, optional_unsigned_int b) {
+    if (a.mHasValue && b.mHasValue) {
+        return a.mValue < b.mValue;
+    }
+    return !a.mHasValue && b.mHasValue;
+  }
+
+  friend bool operator >(optional_unsigned_int a, optional_unsigned_int b) {
+     return b < a;
+  }
+
+  friend bool operator >=(optional_unsigned_int a, optional_unsigned_int b) {
+     return !(a < b);
+  }
+
+  friend bool operator <=(optional_unsigned_int a, optional_unsigned_int b) {
+     return !(a > b);
+  }
+
 private:
   bool mHasValue;
   unsigned int mValue;
