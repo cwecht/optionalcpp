@@ -20,8 +20,16 @@ TEST_CASE("Two optionals without a value are equal.") {
   optional_unsigned_int y;
   REQUIRE(x == y);
   REQUIRE(y == x);
+  REQUIRE(x >= y);
+  REQUIRE(y >= x);
+  REQUIRE(x <= y);
+  REQUIRE(y <= x);
   REQUIRE(!(x != y));
   REQUIRE(!(y != x));
+  REQUIRE(!(x < y));
+  REQUIRE(!(y < x));
+  REQUIRE(!(x > y));
+  REQUIRE(!(y > x));
 }
 
 TEST_CASE("Two optionals with equal values are equal.") {
@@ -30,36 +38,61 @@ TEST_CASE("Two optionals with equal values are equal.") {
   optional_unsigned_int y(anyValue);
   REQUIRE(x == y);
   REQUIRE(y == x);
+  REQUIRE(x <= y);
+  REQUIRE(y <= x);
+  REQUIRE(x >= y);
+  REQUIRE(y >= x);
   REQUIRE(!(x != y));
   REQUIRE(!(y != x));
+  REQUIRE(!(x < y));
+  REQUIRE(!(y < x));
+  REQUIRE(!(x > y));
+  REQUIRE(!(y > x));
 }
 
-TEST_CASE("An optional without a value and an optional with a value are unequal.") {
-  optional_unsigned_int x;
-  unsigned int anyValue = 1;
-  optional_unsigned_int y(anyValue);
-  REQUIRE(!(x == y));
-  REQUIRE(!(y == x));
-  REQUIRE(x != y);
-  REQUIRE(y != x);
-}
-
-TEST_CASE("Two optionals with unequal values are unequal.") {
-  unsigned int anyValue = 5;
-  unsigned int anyOtherValue = 6;
-  optional_unsigned_int x(anyValue);
-  optional_unsigned_int y(anyOtherValue);
-  REQUIRE(!(x == y));
-  REQUIRE(!(y == x));
-  REQUIRE(x != y);
-  REQUIRE(y != x);
-}
-
-TEST_CASE("An optional with a value and an unsigned value with the same value are equal") {
+TEST_CASE("An optional with a value and an unsigned value with the same value are equal.") {
   unsigned int anyValue = 1;
   optional_unsigned_int x(anyValue);
   REQUIRE(x == anyValue);
   REQUIRE(anyValue == x);
+  REQUIRE(x >= anyValue);
+  REQUIRE(anyValue >= x);
+  REQUIRE(x <= anyValue);
+  REQUIRE(anyValue <= x);
   REQUIRE(!(x != anyValue));
   REQUIRE(!(anyValue != x));
+  REQUIRE(!(x < anyValue));
+  REQUIRE(!(anyValue < x));
+  REQUIRE(!(x > anyValue));
+  REQUIRE(!(anyValue > x));
+}
+
+TEST_CASE("An optional without a value is less then an optional with a value (they are unequal).") {
+  optional_unsigned_int x;
+  unsigned int anyValue = 10;
+  optional_unsigned_int y(anyValue);
+  REQUIRE(x < y);
+  REQUIRE(y > x);
+  REQUIRE(x <= y);
+  REQUIRE(y >= x);
+  REQUIRE(!(x == y));
+  REQUIRE(!(y == x));
+  REQUIRE(x != y);
+  REQUIRE(y != x);
+}
+
+TEST_CASE("An optional 'x' is less than an optional 'y' if the value of 'x' is smaller than the value of 'y' (they are unequal).") {
+  unsigned int anyValueX = 5;
+  unsigned int anyValueY = 6;
+  REQUIRE(anyValueX < anyValueY);
+  optional_unsigned_int x(anyValueX);
+  optional_unsigned_int y(anyValueY);
+  REQUIRE(x < y);
+  REQUIRE(y > x);
+  REQUIRE(x <= y);
+  REQUIRE(y >= x);
+  REQUIRE(!(x == y));
+  REQUIRE(!(y == x));
+  REQUIRE(x != y);
+  REQUIRE(y != x);
 }
