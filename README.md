@@ -17,3 +17,13 @@ cd build
 cmake ..
 cmake --build . && ./test_optionalcpp
 ```
+
+## Formatting
+
+In order to format the code, please stick to `clang-format-10`; using another version of clang-format will result in
+reformatting the whole code base.
+
+```
+clang-format-10 -i include/optional.hpp
+clang-format-10 -i tests/tests.cpp
+```

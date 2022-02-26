@@ -1,5 +1,4 @@
 #include "catch_with_main.hpp"
-
 #include "optional.hpp"
 
 TEST_CASE("A default constructed optional has no value.") {
@@ -50,7 +49,9 @@ TEST_CASE("Two optionals with equal values are equal.") {
   REQUIRE(!(y > x));
 }
 
-TEST_CASE("An optional with a value and an unsigned value with the same value are equal.") {
+TEST_CASE(
+    "An optional with a value and an unsigned value with the same value are "
+    "equal.") {
   unsigned int anyValue = 1;
   optional_unsigned_int x(anyValue);
   REQUIRE(x == anyValue);
@@ -67,7 +68,9 @@ TEST_CASE("An optional with a value and an unsigned value with the same value ar
   REQUIRE(!(anyValue > x));
 }
 
-TEST_CASE("An optional without a value is less then an optional with a value (they are unequal).") {
+TEST_CASE(
+    "An optional without a value is less then an optional with a value (they "
+    "are unequal).") {
   optional_unsigned_int x;
   unsigned int anyValue = 10;
   optional_unsigned_int y(anyValue);
@@ -81,7 +84,9 @@ TEST_CASE("An optional without a value is less then an optional with a value (th
   REQUIRE(y != x);
 }
 
-TEST_CASE("An optional 'x' is less than an optional 'y' if the value of 'x' is smaller than the value of 'y' (they are unequal).") {
+TEST_CASE(
+    "An optional 'x' is less than an optional 'y' if the value of 'x' is "
+    "smaller than the value of 'y' (they are unequal).") {
   unsigned int anyValueX = 5;
   unsigned int anyValueY = 6;
   REQUIRE(anyValueX < anyValueY);
