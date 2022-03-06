@@ -101,3 +101,34 @@ TEST_CASE(
   REQUIRE(x != y);
   REQUIRE(y != x);
 }
+
+TEST_CASE("An optional and its copy are equal.") {
+  SECTION("copy constructor without a value") {
+    optional_unsigned_int x;
+    optional_unsigned_int y(x);
+    REQUIRE(x == y);
+  }
+
+  SECTION("copy constructor with a value") {
+    unsigned int anyValueX = 5;
+    optional_unsigned_int x(anyValueX);
+    optional_unsigned_int y(x);
+    REQUIRE(x == y);
+  }
+
+  SECTION("copy assignment without a value") {
+    optional_unsigned_int x;
+    optional_unsigned_int y;
+    y = x;
+    REQUIRE(x == y);
+  }
+
+  SECTION("copy assignment with a value") {
+    unsigned int anyValueX = 5;
+    optional_unsigned_int x(anyValueX);
+    optional_unsigned_int y;
+    y = x;
+    REQUIRE(x == y);
+  }
+}
+
