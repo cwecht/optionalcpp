@@ -10,11 +10,11 @@ class optional_unsigned_int {
       : mHasValue(true)
       , mValue(value) {}
 
-  bool has_value() {
+  bool has_value() const {
     return mHasValue;
   }
 
-  unsigned int value() {
+  unsigned int value() const {
     return mValue;
   }
 
