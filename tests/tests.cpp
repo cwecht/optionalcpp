@@ -1,6 +1,8 @@
 #include "catch_with_main.hpp"
 #include "optional.hpp"
 
+typedef optional<unsigned int> optional_unsigned_int;
+
 TEST_CASE("A default constructed optional has no value.") {
   const optional_unsigned_int x;
   REQUIRE(x.has_value() == false);
