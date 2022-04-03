@@ -1,12 +1,13 @@
 #ifndef OPTIONALCPP_OPTIONAL_HPP
 #define OPTIONALCPP_OPTIONAL_HPP
 
-class optional_unsigned_int {
+template <typename T>
+class optional {
  public:
-  optional_unsigned_int()
+  optional()
       : mHasValue(false) {}
 
-  optional_unsigned_int(unsigned int value)
+  optional(T value)
       : mHasValue(true)
       , mValue(value) {}
 
@@ -14,43 +15,43 @@ class optional_unsigned_int {
     return mHasValue;
   }
 
-  unsigned int value() const {
+  T value() const {
     return mValue;
   }
 
-  friend bool operator==(optional_unsigned_int a, optional_unsigned_int b) {
+  friend bool operator==(optional a, optional b) {
     if (a.mHasValue && b.mHasValue) {
       return a.mValue == b.mValue;
     }
     return !a.mHasValue && !b.mHasValue;
   }
 
-  friend bool operator!=(optional_unsigned_int a, optional_unsigned_int b) {
+  friend bool operator!=(optional a, optional b) {
     return !(a == b);
   }
 
-  friend bool operator<(optional_unsigned_int a, optional_unsigned_int b) {
+  friend bool operator<(optional a, optional b) {
     if (a.mHasValue && b.mHasValue) {
       return a.mValue < b.mValue;
     }
     return !a.mHasValue && b.mHasValue;
   }
 
-  friend bool operator>(optional_unsigned_int a, optional_unsigned_int b) {
+  friend bool operator>(optional a, optional b) {
     return b < a;
   }
 
-  friend bool operator>=(optional_unsigned_int a, optional_unsigned_int b) {
+  friend bool operator>=(optional a, optional b) {
     return !(a < b);
   }
 
-  friend bool operator<=(optional_unsigned_int a, optional_unsigned_int b) {
+  friend bool operator<=(optional a, optional b) {
     return !(a > b);
   }
 
  private:
   bool mHasValue;
-  unsigned int mValue;
+  T mValue;
 };
 
 #endif  // OPTIONALCPP_OPTIONAL_HPP
