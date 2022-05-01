@@ -7,7 +7,7 @@ class optional {
   optional()
       : mHasValue(false) {}
 
-  optional(T value)
+  optional(const T& value)
       : mHasValue(true)
       , mValue(value) {}
 
@@ -15,37 +15,37 @@ class optional {
     return mHasValue;
   }
 
-  T value() const {
+  const T& value() const {
     return mValue;
   }
 
-  friend bool operator==(optional a, optional b) {
+  friend bool operator==(const optional& a, const optional& b) {
     if (a.mHasValue && b.mHasValue) {
       return a.mValue == b.mValue;
     }
     return !a.mHasValue && !b.mHasValue;
   }
 
-  friend bool operator!=(optional a, optional b) {
+  friend bool operator!=(const optional& a, const optional& b) {
     return !(a == b);
   }
 
-  friend bool operator<(optional a, optional b) {
+  friend bool operator<(const optional& a, const optional& b) {
     if (a.mHasValue && b.mHasValue) {
       return a.mValue < b.mValue;
     }
     return !a.mHasValue && b.mHasValue;
   }
 
-  friend bool operator>(optional a, optional b) {
+  friend bool operator>(const optional& a, const optional& b) {
     return b < a;
   }
 
-  friend bool operator>=(optional a, optional b) {
+  friend bool operator>=(const optional& a, const optional& b) {
     return !(a < b);
   }
 
-  friend bool operator<=(optional a, optional b) {
+  friend bool operator<=(const optional& a, const optional& b) {
     return !(a > b);
   }
 
