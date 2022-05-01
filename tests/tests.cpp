@@ -134,3 +134,21 @@ TEST_CASE("An optional and its copy are equal.") {
   }
 }
 
+struct CopyCounting {
+  int const copyCount;
+
+  CopyCounting()
+      : copyCount(0) {}
+
+  CopyCounting(const CopyCounting& other)
+      : copyCount(other.copyCount + 1) {}
+};
+
+TEST_CASE(
+    "During initialization of an optional with a value and reading from it, "
+    "the value type is copied only once.") {
+  CopyCounting c;
+  REQUIRE(c.copyCount == 0);
+  const optional<CopyCounting> x(c);
+  REQUIRE(x.value().copyCount == 1);
+}
