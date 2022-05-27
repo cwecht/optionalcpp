@@ -5,7 +5,8 @@ template <typename T>
 class optional {
  public:
   optional()
-      : mHasValue(false) {}
+      : mHasValue(false)
+      , mNoValue() {}
 
   optional(const T& value)
       : mHasValue(true)
@@ -51,7 +52,12 @@ class optional {
 
  private:
   bool mHasValue;
-  T mValue;
+
+  struct NoValue {};
+  union {
+    NoValue mNoValue;
+    T mValue;
+  };
 };
 
 #endif  // OPTIONALCPP_OPTIONAL_HPP

@@ -152,3 +152,14 @@ TEST_CASE(
   const optional<CopyCounting> x(c);
   REQUIRE(x.value().copyCount == 1);
 }
+
+struct NonDefaultConstructable {
+  NonDefaultConstructable(int x){};
+};
+
+TEST_CASE(
+    "An optional of a non default constructable type can be default "
+    "constructed.") {
+  const optional<NonDefaultConstructable> x;
+  REQUIRE(x.has_value() == false);
+}
