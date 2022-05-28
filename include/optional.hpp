@@ -12,6 +12,12 @@ class optional {
       : mHasValue(true)
       , mValue(value) {}
 
+  ~optional() {
+    if (mHasValue) {
+      mValue.~T();
+    }
+  }
+
   bool has_value() const {
     return mHasValue;
   }
