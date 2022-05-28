@@ -163,3 +163,27 @@ TEST_CASE(
   const optional<NonDefaultConstructable> x;
   REQUIRE(x.has_value() == false);
 }
+
+struct CheckedDestructorCalls {
+  CheckedDestructorCalls() {
+    ++missingDestructorCalls;
+  }
+  CheckedDestructorCalls(const CheckedDestructorCalls&) {
+    ++missingDestructorCalls;
+  }
+  ~CheckedDestructorCalls() {
+    --missingDestructorCalls;
+  }
+
+  static int missingDestructorCalls;
+};
+
+int CheckedDestructorCalls::missingDestructorCalls = 0;
+
+TEST_CASE("An optional with a value destructs the value during destruction.") {
+  {
+    const optional<CheckedDestructorCalls> x{CheckedDestructorCalls{}};
+    REQUIRE(CheckedDestructorCalls::missingDestructorCalls == 1);
+  }
+  REQUIRE(CheckedDestructorCalls::missingDestructorCalls == 0);
+}
