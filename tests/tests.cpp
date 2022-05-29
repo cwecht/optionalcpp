@@ -118,6 +118,19 @@ TEST_CASE("An optional and its copy are equal.") {
     REQUIRE(x == y);
   }
 
+  SECTION("copy constructor without a value (non trivial copy constructor)") {
+    optional<std::string> x;
+    optional<std::string> y(x);
+    REQUIRE(x == y);
+  }
+
+  SECTION("copy constructor with a value (non trivial copy constructor)") {
+    std::string anyValueX = "value";
+    optional<std::string> x(anyValueX);
+    optional<std::string> y(x);
+    REQUIRE(x == y);
+  }
+
   SECTION("copy assignment without a value") {
     optional_unsigned_int x;
     optional_unsigned_int y;
