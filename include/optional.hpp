@@ -12,6 +12,13 @@ class optional {
       : mHasValue(true)
       , mValue(value) {}
 
+  optional(const optional& other)
+      : mHasValue(other.mHasValue) {
+    if (other.mHasValue) {
+      new (&mValue) T(other.mValue);
+    }
+  }
+
   ~optional() {
     if (mHasValue) {
       mValue.~T();
