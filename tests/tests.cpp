@@ -145,6 +145,39 @@ TEST_CASE("An optional and its copy are equal.") {
     y = x;
     REQUIRE(x == y);
   }
+
+  SECTION(
+      "copy assign optional without a value to an optional without a value") {
+    optional<std::vector<int>> x;
+    optional<std::vector<int>> y;
+    y = x;
+    REQUIRE(x == y);
+  }
+
+  SECTION("copy assign optional with a value to an optional without a value") {
+    std::vector<int> anyValueX = {1, 2, 3};
+    optional<std::vector<int>> x(anyValueX);
+    optional<std::vector<int>> y;
+    y = x;
+    REQUIRE(x == y);
+  }
+
+  SECTION("copy assign optional without a value to an optional with a value") {
+    optional<std::vector<int>> x;
+    std::vector<int> anyValueY = {1, 2, 3};
+    optional<std::vector<int>> y(anyValueY);
+    y = x;
+    REQUIRE(x == y);
+  }
+
+  SECTION("copy assign optional with a value to an optional with a value") {
+    std::vector<int> anyValueX = {1, 2, 3};
+    optional<std::vector<int>> x(anyValueX);
+    std::vector<int> anyValueY = {1, 3};
+    optional<std::vector<int>> y(anyValueY);
+    y = x;
+    REQUIRE(x == y);
+  }
 }
 
 struct CopyCounting {

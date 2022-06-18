@@ -19,6 +19,17 @@ class optional {
     }
   }
 
+  void operator=(const optional& other) {
+    if (mHasValue && other.mHasValue) {
+      mValue = other.mValue;
+    } else if (other.mHasValue) {
+      new (&mValue) T(other.mValue);
+    } else if (mHasValue) {
+      mValue.~T();
+    }
+    mHasValue = other.mHasValue;
+  }
+
   ~optional() {
     if (mHasValue) {
       mValue.~T();
