@@ -19,7 +19,7 @@ class optional {
     }
   }
 
-  void operator=(const optional& other) {
+  optional& operator=(const optional& other) {
     if (mHasValue && other.mHasValue) {
       mValue = other.mValue;
     } else if (other.mHasValue) {
@@ -28,6 +28,7 @@ class optional {
       mValue.~T();
     }
     mHasValue = other.mHasValue;
+    return *this;
   }
 
   ~optional() {
