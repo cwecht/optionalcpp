@@ -146,6 +146,16 @@ TEST_CASE("An optional and its copy are equal.") {
     REQUIRE(x == y);
   }
 
+  SECTION("copy assignment to two optionals") {
+    int anyValueX = 5;
+    optional<int> x(anyValueX);
+    optional<int> y;
+    optional<int> z;
+    z = y = x;
+    REQUIRE(x == y);
+    REQUIRE(x == z);
+  }
+
   SECTION(
       "copy assign optional without a value to an optional without a value") {
     optional<std::vector<int>> x;
