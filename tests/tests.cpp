@@ -8,12 +8,39 @@ TEST_CASE("A default constructed optional has no value.") {
   REQUIRE(x.has_value() == false);
 }
 
+TEST_CASE("An default constructed optional converts to 'false'.") {
+  const optional_unsigned_int x;
+  REQUIRE(!x);
+}
+
+TEST_CASE("An optional constructed with a value converts to 'true'.") {
+  unsigned int anyValue = 10;
+  const optional_unsigned_int x(anyValue);
+  REQUIRE(x);
+}
+
 TEST_CASE(
     "An optional constructed with a value has a value and stores the value.") {
   unsigned int anyValue = 10;
   const optional_unsigned_int x(anyValue);
   REQUIRE(x.has_value() == true);
   REQUIRE(x.value() == anyValue);
+}
+
+TEST_CASE("An optional constructed with a value can be dereferenced.") {
+  unsigned int anyValue = 10;
+  const optional_unsigned_int x(anyValue);
+  REQUIRE(*x == anyValue);
+}
+
+TEST_CASE("An optional constructed with a value can access members directly.") {
+  struct A {
+    unsigned int x;
+  };
+  unsigned int anyValue = 10;
+  A anyStructValue = {anyValue};
+  const optional<A> a(anyStructValue);
+  REQUIRE(a->x == anyValue);
 }
 
 TEST_CASE("Two optionals without a value are equal.") {
