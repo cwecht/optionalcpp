@@ -41,8 +41,20 @@ class optional {
     return mHasValue;
   }
 
+  explicit operator bool() const {
+    return mHasValue;
+  }
+
   const T& value() const {
     return mValue;
+  }
+
+  const T& operator*() const {
+    return mValue;
+  }
+
+  const T* operator->() const {
+    return &mValue;
   }
 
   friend bool operator==(const optional& a, const optional& b) {
