@@ -270,3 +270,8 @@ TEST_CASE("An optional with a value destructs the value during destruction.") {
   }
   REQUIRE(CheckedDestructorCalls::missingDestructorCalls == 0);
 }
+
+TEST_CASE("value() will throw if it is called on an optional without a value") {
+  const optional<int> empty;
+  REQUIRE_THROWS_AS(empty.value(), bad_optional_access);
+}

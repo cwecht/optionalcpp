@@ -1,6 +1,8 @@
 #ifndef OPTIONALCPP_OPTIONAL_HPP
 #define OPTIONALCPP_OPTIONAL_HPP
 
+class bad_optional_access : public std::exception {};
+
 template <typename T>
 class optional {
  public:
@@ -46,6 +48,9 @@ class optional {
   }
 
   const T& value() const {
+    if (not mHasValue) {
+      throw bad_optional_access();
+    }
     return mValue;
   }
 
