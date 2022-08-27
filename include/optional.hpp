@@ -69,7 +69,30 @@ class optional {
     return !a.mHasValue && !b.mHasValue;
   }
 
+  template <typename U>
+  friend bool operator==(const optional& a, const U& b) {
+    if (not a.mHasValue) {
+      return false;
+    }
+    return a.mValue == b;
+  }
+
+  template <typename U>
+  friend bool operator==(const U& a, const optional& b) {
+    return b == a;
+  }
+
   friend bool operator!=(const optional& a, const optional& b) {
+    return !(a == b);
+  }
+
+  template <typename U>
+  friend bool operator!=(const optional& a, const U& b) {
+    return !(a == b);
+  }
+
+  template <typename U>
+  friend bool operator!=(const U& a, const optional& b) {
     return !(a == b);
   }
 
@@ -80,7 +103,33 @@ class optional {
     return !a.mHasValue && b.mHasValue;
   }
 
+  template <typename U>
+  friend bool operator<(const optional& a, const U& b) {
+    if (not a.mHasValue) {
+      return true;
+    }
+    return a.mValue < b;
+  }
+
+  template <typename U>
+  friend bool operator<(const U& a, const optional& b) {
+    if (not b.mHasValue) {
+      return false;
+    }
+    return a < b.mValue;
+  }
+
   friend bool operator>(const optional& a, const optional& b) {
+    return b < a;
+  }
+
+  template <typename U>
+  friend bool operator>(const optional& a, const U& b) {
+    return b < a;
+  }
+
+  template <typename U>
+  friend bool operator>(const U& a, const optional& b) {
     return b < a;
   }
 
@@ -88,8 +137,28 @@ class optional {
     return !(a < b);
   }
 
+  template <typename U>
+  friend bool operator>=(const optional& a, const U& b) {
+    return !(a < b);
+  }
+
+  template <typename U>
+  friend bool operator>=(const U& a, const optional& b) {
+    return !(a < b);
+  }
+
   friend bool operator<=(const optional& a, const optional& b) {
-    return !(a > b);
+    return !(b < a);
+  }
+
+  template <typename U>
+  friend bool operator<=(const optional& a, const U& b) {
+    return !(b < a);
+  }
+
+  template <typename U>
+  friend bool operator<=(const U& a, const optional<T>& b) {
+    return !(b < a);
   }
 
  private:
