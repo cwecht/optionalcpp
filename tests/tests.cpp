@@ -275,3 +275,88 @@ TEST_CASE("value() will throw if it is called on an optional without a value") {
   const optional<int> empty;
   REQUIRE_THROWS_AS(empty.value(), bad_optional_access);
 }
+
+struct GlobalCopyCounting {
+  GlobalCopyCounting() {}
+
+  GlobalCopyCounting(const GlobalCopyCounting&) {
+    ++copyCount;
+  }
+
+  static int copyCount;
+};
+
+int GlobalCopyCounting::copyCount = 0;
+
+bool operator==(const GlobalCopyCounting&, const GlobalCopyCounting&) {
+  return true;
+}
+
+bool operator<(const GlobalCopyCounting&, const GlobalCopyCounting&) {
+  return true;
+}
+
+TEST_CASE(
+    "While comparing an optional with a value the value is not copied (because "
+    "no temporary is created)") {
+  const GlobalCopyCounting ref;
+  const optional<GlobalCopyCounting> opt(ref);
+  GlobalCopyCounting::copyCount = 0;
+
+  optional<std::string> op("hello");
+
+  bool val = op == "he";
+
+  REQUIRE(ref == opt);
+  REQUIRE(opt == ref);
+  REQUIRE(!(ref != opt));
+  REQUIRE(!(opt != ref));
+  REQUIRE(ref < opt);
+  REQUIRE(opt < ref);
+  REQUIRE(ref < opt);
+  REQUIRE(opt < ref);
+  REQUIRE(!(ref >= opt));
+  REQUIRE(!(opt <= ref));
+  REQUIRE(!(ref <= opt));
+  REQUIRE(!(opt <= ref));
+
+  REQUIRE(GlobalCopyCounting::copyCount == 0);
+}
+
+struct HeterogenousComparableOnly {
+  int x;
+  friend bool operator==(HeterogenousComparableOnly a, int b) {
+    return a.x == b;
+  }
+  friend bool operator==(int b, HeterogenousComparableOnly a) {
+    return b == a.x;
+  }
+  friend bool operator<(HeterogenousComparableOnly a, int b) {
+    return a.x < b;
+  }
+  friend bool operator<(int b, HeterogenousComparableOnly a) {
+    return b < a.x;
+  }
+};
+
+TEST_CASE(
+    "If an optional with a value is compared with an value of another type "
+    "heterogeneous comparisons can be used.") {
+  int anyInt = 5;
+  HeterogenousComparableOnly anyA = {anyInt};
+  optional<HeterogenousComparableOnly> opt(anyA);
+  REQUIRE(opt == anyInt);
+  REQUIRE(anyInt == opt);
+  REQUIRE(!(opt != anyInt));
+  REQUIRE(!(anyInt != opt));
+
+  REQUIRE(opt <= anyInt);
+  REQUIRE(anyInt <= opt);
+  REQUIRE(!(opt < anyInt));
+  REQUIRE(!(anyInt < opt));
+
+  REQUIRE(opt >= anyInt);
+  REQUIRE(anyInt >= opt);
+  REQUIRE(!(opt > anyInt));
+  REQUIRE(!(anyInt > opt));
+}
