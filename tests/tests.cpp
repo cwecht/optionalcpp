@@ -43,6 +43,25 @@ TEST_CASE("An optional constructed with a value can access members directly.") {
   REQUIRE(a->x == anyValue);
 }
 
+TEST_CASE("An non-const optional's value can be mutated.") {
+  struct A {
+    unsigned int x;
+  };
+  A anyValue = {10};
+  optional<A> x(anyValue);
+  A anyOtherValue = {5};
+  SECTION("value()") {
+    x.value() = anyOtherValue;
+  }
+  SECTION("*-operator") {
+    *x = anyOtherValue;
+  }
+  SECTION("->-operator") {
+    x->x = anyOtherValue.x;
+  }
+  REQUIRE(x->x == anyOtherValue.x);
+}
+
 TEST_CASE("Two optionals without a value are equal.") {
   optional_unsigned_int x;
   optional_unsigned_int y;

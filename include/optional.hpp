@@ -48,9 +48,12 @@ class optional {
   }
 
   const T& value() const {
-    if (not mHasValue) {
-      throw bad_optional_access();
-    }
+    throwInCaseOfBadAccess();
+    return mValue;
+  }
+
+  T& value() {
+    throwInCaseOfBadAccess();
     return mValue;
   }
 
@@ -58,7 +61,15 @@ class optional {
     return mValue;
   }
 
+  T& operator*() {
+    return mValue;
+  }
+
   const T* operator->() const {
+    return &mValue;
+  }
+
+  T* operator->() {
     return &mValue;
   }
 
@@ -169,6 +180,12 @@ class optional {
     NoValue mNoValue;
     T mValue;
   };
+
+  void throwInCaseOfBadAccess() const {
+    if (not mHasValue) {
+      throw bad_optional_access();
+    }
+  }
 };
 
 #endif  // OPTIONALCPP_OPTIONAL_HPP
