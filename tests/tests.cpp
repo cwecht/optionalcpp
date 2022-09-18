@@ -33,10 +33,11 @@ TEST_CASE("An optional constructed with a value can be dereferenced.") {
   REQUIRE(*x == anyValue);
 }
 
+struct A {
+  unsigned int x;
+};
+
 TEST_CASE("An optional constructed with a value can access members directly.") {
-  struct A {
-    unsigned int x;
-  };
   unsigned int anyValue = 10;
   A anyStructValue = {anyValue};
   const optional<A> a(anyStructValue);
@@ -44,9 +45,6 @@ TEST_CASE("An optional constructed with a value can access members directly.") {
 }
 
 TEST_CASE("An non-const optional's value can be mutated.") {
-  struct A {
-    unsigned int x;
-  };
   A anyValue = {10};
   optional<A> x(anyValue);
   A anyOtherValue = {5};
@@ -204,33 +202,45 @@ TEST_CASE("An optional and its copy are equal.") {
 
   SECTION(
       "copy assign optional without a value to an optional without a value") {
-    optional<std::vector<int>> x;
-    optional<std::vector<int>> y;
+    optional<std::vector<int> > x;
+    optional<std::vector<int> > y;
     y = x;
     REQUIRE(x == y);
   }
 
   SECTION("copy assign optional with a value to an optional without a value") {
-    std::vector<int> anyValueX = {1, 2, 3};
-    optional<std::vector<int>> x(anyValueX);
-    optional<std::vector<int>> y;
+    std::vector<int> anyValueX;
+    anyValueX.push_back(1);
+    anyValueX.push_back(2);
+    anyValueX.push_back(3);
+    optional<std::vector<int> > x(anyValueX);
+    optional<std::vector<int> > y;
     y = x;
     REQUIRE(x == y);
   }
 
   SECTION("copy assign optional without a value to an optional with a value") {
-    optional<std::vector<int>> x;
-    std::vector<int> anyValueY = {1, 2, 3};
-    optional<std::vector<int>> y(anyValueY);
+    optional<std::vector<int> > x;
+    std::vector<int> anyValueY;
+    anyValueY.push_back(1);
+    anyValueY.push_back(2);
+    anyValueY.push_back(3);
+    optional<std::vector<int> > y(anyValueY);
     y = x;
     REQUIRE(x == y);
   }
 
   SECTION("copy assign optional with a value to an optional with a value") {
-    std::vector<int> anyValueX = {1, 2, 3};
-    optional<std::vector<int>> x(anyValueX);
-    std::vector<int> anyValueY = {1, 3};
-    optional<std::vector<int>> y(anyValueY);
+    std::vector<int> anyValueX;
+    anyValueX.push_back(1);
+    anyValueX.push_back(2);
+    anyValueX.push_back(3);
+    optional<std::vector<int> > x(anyValueX);
+
+    std::vector<int> anyValueY;
+    anyValueY.push_back(1);
+    anyValueY.push_back(3);
+    optional<std::vector<int> > y(anyValueY);
     y = x;
     REQUIRE(x == y);
   }
@@ -284,7 +294,8 @@ int CheckedDestructorCalls::missingDestructorCalls = 0;
 
 TEST_CASE("An optional with a value destructs the value during destruction.") {
   {
-    const optional<CheckedDestructorCalls> x{CheckedDestructorCalls{}};
+    const optional<CheckedDestructorCalls> x =
+        optional<CheckedDestructorCalls>(CheckedDestructorCalls());
     REQUIRE(CheckedDestructorCalls::missingDestructorCalls == 1);
   }
   REQUIRE(CheckedDestructorCalls::missingDestructorCalls == 0);
