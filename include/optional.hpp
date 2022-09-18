@@ -7,27 +7,27 @@ template <typename T>
 class optional {
  public:
   optional()
-      : mHasValue(false)
-      , mNoValue() {}
+      : mHasValue(false) {}
 
   optional(const T& value)
-      : mHasValue(true)
-      , mValue(value) {}
+      : mHasValue(true) {
+    constructValue(value);
+  }
 
   optional(const optional& other)
       : mHasValue(other.mHasValue) {
     if (other.mHasValue) {
-      new (&mValue) T(other.mValue);
+      constructValue(*other);
     }
   }
 
   optional& operator=(const optional& other) {
     if (mHasValue && other.mHasValue) {
-      mValue = other.mValue;
+      *(*this) = *other;
     } else if (other.mHasValue) {
-      new (&mValue) T(other.mValue);
+      constructValue(*other);
     } else if (mHasValue) {
-      mValue.~T();
+      destructValue();
     }
     mHasValue = other.mHasValue;
     return *this;
@@ -35,7 +35,7 @@ class optional {
 
   ~optional() {
     if (mHasValue) {
-      mValue.~T();
+      destructValue();
     }
   }
 
@@ -43,18 +43,18 @@ class optional {
     return mHasValue;
   }
 
-  explicit operator bool() const {
+  operator bool() const {
     return mHasValue;
   }
 
   const T& value() const {
     throwInCaseOfBadAccess();
-    return mValue;
+    return *(*this);
   }
 
   T& value() {
     throwInCaseOfBadAccess();
-    return mValue;
+    return *(*this);
   }
 
   const T& operator*() const {
@@ -66,16 +66,16 @@ class optional {
   }
 
   const T* operator->() const {
-    return &mValue;
+    return &(*(*this));
   }
 
   T* operator->() {
-    return &mValue;
+    return &(*(*this));
   }
 
   friend bool operator==(const optional& a, const optional& b) {
     if (a.mHasValue && b.mHasValue) {
-      return a.mValue == b.mValue;
+      return *a == *b;
     }
     return !a.mHasValue && !b.mHasValue;
   }
@@ -85,7 +85,7 @@ class optional {
     if (not a.mHasValue) {
       return false;
     }
-    return a.mValue == b;
+    return *a == b;
   }
 
   template <typename U>
@@ -109,7 +109,7 @@ class optional {
 
   friend bool operator<(const optional& a, const optional& b) {
     if (a.mHasValue && b.mHasValue) {
-      return a.mValue < b.mValue;
+      return *a < *b;
     }
     return !a.mHasValue && b.mHasValue;
   }
@@ -119,7 +119,7 @@ class optional {
     if (not a.mHasValue) {
       return true;
     }
-    return a.mValue < b;
+    return *a < b;
   }
 
   template <typename U>
@@ -127,7 +127,7 @@ class optional {
     if (not b.mHasValue) {
       return false;
     }
-    return a < b.mValue;
+    return a < *b;
   }
 
   friend bool operator>(const optional& a, const optional& b) {
@@ -185,6 +185,14 @@ class optional {
     if (not mHasValue) {
       throw bad_optional_access();
     }
+  }
+
+  void constructValue(const T& other) {
+    new (&mValue) T(other);
+  }
+
+  void destructValue() {
+    mValue.~T();
   }
 };
 
