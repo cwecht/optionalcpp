@@ -58,11 +58,11 @@ class optional {
   }
 
   const T& operator*() const {
-    return mValue;
+    return *reinterpret_cast<const T*>(&mBuffer);
   }
 
   T& operator*() {
-    return mValue;
+    return *reinterpret_cast<T*>(&mBuffer);
   }
 
   const T* operator->() const {
@@ -175,10 +175,14 @@ class optional {
  private:
   bool mHasValue;
 
-  struct NoValue {};
+  union max_align_t {
+    long long ll;
+    long double ld;
+  };
+
   union {
-    NoValue mNoValue;
-    T mValue;
+    char mBuffer[sizeof(T)];
+    max_align_t mDummy;
   };
 
   void throwInCaseOfBadAccess() const {
@@ -188,11 +192,11 @@ class optional {
   }
 
   void constructValue(const T& other) {
-    new (&mValue) T(other);
+    new (&mBuffer) T(other);
   }
 
   void destructValue() {
-    mValue.~T();
+    reinterpret_cast<T*>(&mBuffer)->~T();
   }
 };
 
