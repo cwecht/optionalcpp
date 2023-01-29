@@ -1,6 +1,58 @@
 #ifndef OPTIONALCPP_OPTIONAL_HPP
 #define OPTIONALCPP_OPTIONAL_HPP
 
+#include <cstddef>
+
+union max_align_t {
+  long long ll;
+  long double ld;
+};
+
+template <typename T>
+struct alignment_probe {
+  bool x;
+  T probee;
+};
+
+template <typename T>
+struct alignment_of {
+  static const std::size_t value = sizeof(alignment_probe<T>) - sizeof(T);
+};
+
+template <std::size_t N>
+struct type_with_alignment {
+  typedef max_align_t type;
+};
+
+template <>
+struct type_with_alignment<alignment_of<char>::value> {
+  typedef char type;
+};
+
+template <>
+struct type_with_alignment<alignment_of<short>::value> {
+  typedef short type;
+};
+
+template <>
+struct type_with_alignment<alignment_of<int>::value> {
+  typedef int type;
+};
+
+template <>
+struct type_with_alignment<alignment_of<long>::value> {
+  typedef long type;
+};
+
+template <std::size_t Size,
+          std::size_t Alignment = alignment_of<max_align_t>::value>
+struct aligned_storage {
+  union {
+    char mStorage[Size];
+    typename type_with_alignment<Alignment>::type mAlignmentDummy;
+  };
+};
+
 class bad_optional_access : public std::exception {};
 
 template <typename T>
@@ -175,15 +227,7 @@ class optional {
  private:
   bool mHasValue;
 
-  union max_align_t {
-    long long ll;
-    long double ld;
-  };
-
-  union {
-    char mBuffer[sizeof(T)];
-    max_align_t mDummy;
-  };
+  aligned_storage<sizeof(T), alignment_of<T>::value> mBuffer;
 
   void throwInCaseOfBadAccess() const {
     if (not mHasValue) {
@@ -192,11 +236,11 @@ class optional {
   }
 
   void constructValue(const T& other) {
-    new (&mBuffer) T(other);
+    new (&mBuffer.mStorage) T(other);
   }
 
   void destructValue() {
-    reinterpret_cast<T*>(&mBuffer)->~T();
+    reinterpret_cast<T*>(&mBuffer.mStorage)->~T();
   }
 };
 
