@@ -61,8 +61,7 @@ class optional {
   optional()
       : mHasValue(false) {}
 
-  optional(const T& value)
-      : mHasValue(true) {
+  optional(const T& value) {
     constructValue(value);
   }
 
@@ -81,7 +80,6 @@ class optional {
     } else if (mHasValue) {
       destructValue();
     }
-    mHasValue = other.mHasValue;
     return *this;
   }
 
@@ -123,6 +121,19 @@ class optional {
 
   T* operator->() {
     return &(*(*this));
+  }
+
+  void swap(optional& other) {
+    if (this->has_value() and other.has_value()) {
+      using std::swap;
+      swap(*(*this), *other);
+    } else if (this->has_value()) {
+      other.constructValue(*(*this));
+      this->destructValue();
+    } else if (other.has_value()) {
+      this->constructValue(*other);
+      other.destructValue();
+    }
   }
 
   friend bool operator==(const optional& a, const optional& b) {
@@ -224,6 +235,10 @@ class optional {
     return !(b < a);
   }
 
+  friend void swap(optional& a, optional& b ) {
+    a.swap(b);
+  }
+
  private:
   bool mHasValue;
 
@@ -237,10 +252,12 @@ class optional {
 
   void constructValue(const T& other) {
     new (&mBuffer.mStorage) T(other);
+    mHasValue = true;
   }
 
   void destructValue() {
     reinterpret_cast<T*>(&mBuffer.mStorage)->~T();
+    mHasValue = false;
   }
 };
 
