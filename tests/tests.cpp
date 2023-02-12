@@ -390,3 +390,57 @@ TEST_CASE(
   REQUIRE(!(opt > anyInt));
   REQUIRE(!(anyInt > opt));
 }
+
+TEST_CASE(
+    "If two optionals with values are swapped, their values are swapped.") {
+  unsigned int anyValueX = 10;
+  unsigned int anyValueY = 2;
+  optional_unsigned_int x(anyValueX);
+  optional_unsigned_int y(anyValueY);
+
+  x.swap(y);
+
+  REQUIRE(*x == anyValueY);
+  REQUIRE(*y == anyValueX);
+}
+
+TEST_CASE("If two optionals with no values are swapped, they stay empty.") {
+  optional_unsigned_int x;
+  optional_unsigned_int y;
+
+  x.swap(y);
+
+  REQUIRE(not x.has_value());
+  REQUIRE(not y.has_value());
+}
+
+TEST_CASE(
+    "If an optional with a value and an optional without a value are swapped, "
+    "the value is transferred.") {
+  unsigned int anyValueX = 10;
+  optional_unsigned_int x(anyValueX);
+  optional_unsigned_int y;
+
+  SECTION("this has value") {
+    x.swap(y);
+  }
+  SECTION("this has value") {
+    y.swap(x);
+  }
+
+  REQUIRE(not x.has_value());
+  REQUIRE(y.has_value());
+  REQUIRE(*y == anyValueX);
+}
+
+TEST_CASE("Free Function swap called on options swaps the optionals") {
+  unsigned int anyValueX = 10;
+  optional_unsigned_int x(anyValueX);
+  optional_unsigned_int y;
+
+  swap(x, y);
+
+  REQUIRE(not x.has_value());
+  REQUIRE(y.has_value());
+  REQUIRE(*y == anyValueX);
+}
