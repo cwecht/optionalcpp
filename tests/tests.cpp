@@ -444,3 +444,19 @@ TEST_CASE("Free Function swap called on options swaps the optionals") {
   REQUIRE(y.has_value());
   REQUIRE(*y == anyValueX);
 }
+
+TEST_CASE("reset destroys the value of an optional with a value.") {
+  int anyValueX = 5;
+  optional<int> mValue(anyValueX);
+  REQUIRE(mValue);
+  mValue.reset();
+  REQUIRE(not mValue);
+}
+
+TEST_CASE(
+    "After calling reset an optional without a value has still a value.") {
+  optional<int> mValue;
+  REQUIRE(not mValue);
+  mValue.reset();
+  REQUIRE(not mValue);
+}
