@@ -2,6 +2,7 @@
 #define OPTIONALCPP_OPTIONAL_HPP
 
 #include <cstddef>
+#include <algorithm>
 
 union max_align_t {
   long long ll;
@@ -136,6 +137,12 @@ class optional {
     }
   }
 
+  void reset() {
+    if (mHasValue) {
+      destructValue();
+    }
+  }
+
   friend bool operator==(const optional& a, const optional& b) {
     if (a.mHasValue && b.mHasValue) {
       return *a == *b;
@@ -235,7 +242,7 @@ class optional {
     return !(b < a);
   }
 
-  friend void swap(optional& a, optional& b ) {
+  friend void swap(optional& a, optional& b) {
     a.swap(b);
   }
 
