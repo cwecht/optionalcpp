@@ -1,8 +1,8 @@
 #ifndef OPTIONALCPP_OPTIONAL_HPP
 #define OPTIONALCPP_OPTIONAL_HPP
 
-#include <cstddef>
 #include <algorithm>
+#include <cstddef>
 
 union max_align_t {
   long long ll;
@@ -56,10 +56,17 @@ struct aligned_storage {
 
 class bad_optional_access : public std::exception {};
 
+struct nullopt_t {};
+
+const nullopt_t nullopt;
+
 template <typename T>
 class optional {
  public:
   optional()
+      : mHasValue(false) {}
+
+  optional(nullopt_t)
       : mHasValue(false) {}
 
   optional(const T& value) {
@@ -81,6 +88,11 @@ class optional {
     } else if (mHasValue) {
       destructValue();
     }
+    return *this;
+  }
+
+  optional& operator=(nullopt_t) {
+    reset();
     return *this;
   }
 
@@ -163,6 +175,14 @@ class optional {
     return b == a;
   }
 
+  friend bool operator==(nullopt_t, const optional& b) {
+     return not b.mHasValue;
+  }
+
+  friend bool operator==(const optional& a, nullopt_t) {
+     return nullopt == a;
+  }
+
   friend bool operator!=(const optional& a, const optional& b) {
     return !(a == b);
   }
@@ -198,6 +218,14 @@ class optional {
       return false;
     }
     return a < *b;
+  }
+
+  friend bool operator<(nullopt_t, const optional& b) {
+     return b.mHasValue;
+  }
+
+  friend bool operator<(const optional& a, nullopt_t) {
+     return false;
   }
 
   friend bool operator>(const optional& a, const optional& b) {

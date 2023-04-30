@@ -13,6 +13,16 @@ TEST_CASE("An default constructed optional converts to 'false'.") {
   REQUIRE(!x);
 }
 
+TEST_CASE("A default constructed optional converts to 'false'.") {
+  const optional_unsigned_int x;
+  REQUIRE(!x);
+}
+
+TEST_CASE("An optional initialized from nullopt has no value.") {
+  const optional_unsigned_int x = nullopt;
+  REQUIRE(!x);
+}
+
 TEST_CASE("An optional constructed with a value converts to 'true'.") {
   unsigned int anyValue = 10;
   const optional_unsigned_int x(anyValue);
@@ -146,6 +156,42 @@ TEST_CASE(
   REQUIRE(!(y == x));
   REQUIRE(x != y);
   REQUIRE(y != x);
+}
+
+TEST_CASE("An optional without a value equals nullopt.") {
+  const optional_unsigned_int x;
+  REQUIRE(x == nullopt);
+  REQUIRE(x <= nullopt);
+  REQUIRE(x >= nullopt);
+  REQUIRE(nullopt == x);
+  REQUIRE(nullopt <= x);
+  REQUIRE(nullopt >= x);
+  REQUIRE(!(x != nullopt));
+  REQUIRE(!(x < nullopt));
+  REQUIRE(!(x > nullopt));
+  REQUIRE(!(nullopt != x));
+  REQUIRE(!(nullopt < x));
+  REQUIRE(!(nullopt > x));
+}
+
+TEST_CASE("An optional with a value does not equal nullopt.") {
+  unsigned int anyValue = 10;
+  const optional_unsigned_int x(anyValue);
+  REQUIRE(!(x == nullopt));
+  REQUIRE(!(x <= nullopt));
+  REQUIRE(!(nullopt == x));
+  REQUIRE(!(nullopt >= x));
+  REQUIRE(x != nullopt);
+  REQUIRE(nullopt != x);
+}
+
+TEST_CASE("An optional with a value greater than nullopt.") {
+  unsigned int anyValue = 10;
+  const optional_unsigned_int x(anyValue);
+  REQUIRE(x > nullopt);
+  REQUIRE(x >= nullopt);
+  REQUIRE(nullopt < x);
+  REQUIRE(nullopt <= x);
 }
 
 TEST_CASE("An optional and its copy are equal.") {
@@ -460,3 +506,22 @@ TEST_CASE(
   mValue.reset();
   REQUIRE(not mValue);
 }
+
+TEST_CASE(
+    "Assigning nullopt to an optional with a value resets the optional.") {
+  int anyValueX = 5;
+  optional<int> x(anyValueX);
+  REQUIRE(x);
+  x = nullopt;
+  REQUIRE(not x);
+}
+
+TEST_CASE(
+    "After assigning a nullopt to an optional without a value has still a "
+    "value.") {
+  optional<int> x;
+  REQUIRE(not x);
+  x = nullopt;
+  REQUIRE(not x);
+}
+
